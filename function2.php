@@ -13,10 +13,15 @@
     }
     // kiểm tra email
     
-    function emailValid($string) 
+    function emailValid($email) 
     { 
-        if (preg_match ("/^([a-zA-Z0-9])+([a-zA-Z0-9\._-])*@([a-zA-Z0-9_-])+\.[A-Za-z]{2,6}$/", $string)) 
-            return true; 
+        $regex = "/([a-z0-9_]+|[a-z0-9_]+\.[a-z0-9_]+)@(([a-z0-9]|[a-z0-9]+\.[a-z0-9]+)+\.([a-z]{2,4}))/i"; 
+        if(!preg_match($regex, $email)) { 
+            echo "Địa chỉ email phù hợp"; 
+        } 
+        else { 
+            echo "Email không đúng";  
+        }
     } 
 
 ?>

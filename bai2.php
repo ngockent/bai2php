@@ -13,9 +13,9 @@
 </head>
 
 <body>
-    <?php 
-        include 'connect2.php';
-        include 'function2.php';
+    <?php
+    include 'connect2.php';
+    include 'function2.php';
     ?>
     <div class="container bg-dark text-light">
         <form method="POST" class="needs-validation" novalidate>
@@ -23,14 +23,14 @@
             <div class="row">
                 <div class="col-md-2">
                     <label for="quydanh">Quý danh</label>
-                    <select name="quydanh"  class="form-control" required>
+                    <select name="quydanh" class="form-control" required>
                         <option value="Mr">Mr</option>
                         <option value="Mrs">Mrs</option>
                     </select>
                 </div>
                 <div class="col-md-4">
                     <label for="hoten">Họ và tên</label>
-                    <input type="text" class="form-control"  name="hoten" required>
+                    <input type="text" class="form-control" name="hoten" required>
                     <div class="invalid-feedback">
                         Họ và tên không được để trống.
                     </div>
@@ -47,36 +47,36 @@
                 </div>
                 <div class="col-md-3">
                     <label for="diachi">Địa chỉ</label>
-                    <input type="text" class="form-control"  name="diachi" required>
+                    <input type="text" class="form-control" name="diachi" required>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-3">
                     <label for="sodienthoai">Số điện thoại</label>
-                    <input type="text" class="form-control"  name="sdt" required>
+                    <input type="text" class="form-control" name="sdt" required>
                     <div class="invalid-feedback">
                         Điện thoại không được để trống.
                     </div>
                 </div>
                 <div class="col-md-3">
                     <label for="sodienthoaikhac">Số điện thoại khác</label>
-                    <input type="text" class="form-control"  name="sdtk" required>
+                    <input type="text" class="form-control" name="sdtk" required>
                 </div>
                 <div class="col-md-6">
                     <label for="yeucau">Nội dung yêu cầu</label>
-                    <textarea name="yeucau"  class="form-control" rows="3" required></textarea>
+                    <textarea name="yeucau" class="form-control" rows="3" required></textarea>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-4">
                     <label for="email">Email</label>
-                    <input type="email" name="email"  class="form-control" required>
+                    <input type="email" name="email" class="form-control" required>
                 </div>
             </div>
             <div class="row">
-                <div class="checkbox">
-                        <input type="checkbox" value="Có" style="margin-left:15px" name="xuathd">
-                        Tôi muốn xuất hóa đơn
+                <div>
+                    <input type="checkbox" value="Có"  name="xuathd[]" style="margin-left:15px">
+                    <label>Tôi muốn xuất hóa đơn</label> 
                 </div>
             </div>
             <div class="row">
@@ -84,24 +84,40 @@
             </div>
         </form>
         <?php
-            if(isset($_POST['OK'])){
-                $quydanh = $_POST['quydanh'];
-                $hoten = $_POST['hoten'];
-                $thanhpho = $_POST['thanhpho'];
-                $diachi = $_POST['diachi'];
-                $sdt = $_POST['sdt'];
-                $sdtk = $_POST['sdtk'];
-                $yeucau = $_POST['yeucau'];
-                $email = $_POST['email'];
-                $hoadon = $_POST['xuathd'];
+        if (isset($_POST['OK'])) {
+            $inhoadon ="";
+            $quydanh = $_POST['quydanh'];
+            $hoten = $_POST['hoten'];
+            $thanhpho = $_POST['thanhpho'];
+            $diachi = $_POST['diachi'];
+            $sdt = $_POST['sdt'];
+            $sdtk = $_POST['sdtk'];
+            $yeucau = $_POST['yeucau'];
+            $email = $_POST['email'];
+            $hoadon = $_POST['xuathd'];
+            foreach($hoadon as $dem)
+			{
+				$inhoadon .= $dem." ";	
+			}
 
-                //kiểm tra email có đúng định dạng không
-                emailValid($email);
+            //Kiểm tra họ tên
+            if ($hoten == "") {
+                echo "<script>alert('Họ tên không được để trống')</script>";
+                die();
+            }
+            //kiểm tra email có đúng định dạng không
+            $regex = "/^([a-zA-Z0-9])+([a-zA-Z0-9\._-])*@([a-zA-Z0-9_-])+\.[A-Za-z]{2,6}$/";
+            if (preg_match($regex, $email)) {
                 //thêm dữ liệu vào database
                 $sqlInsert = "insert into hoadon(quydanh,hoten,thanhpho,diachi,sdt,sdtk,yeucau,email,inhoadon)
-                        values('$quydanh','$hoten','$thanhpho','$diachi','$sdt','$sdtk','$yeucau','$email','$hoadon')";
-                $exeInsert = mysqli_query($con,$sqlInsert);
+                            values('$quydanh','$hoten','$thanhpho','$diachi','$sdt','$sdtk','$yeucau','$email','$inhoadon')";
+                $exeInsert = mysqli_query($con, $sqlInsert);
+                echo "<script>alert('Đã gửi thông tin')</script>";
+            } else {
+                echo "Email không đúng";
+                die();
             }
+        }
         ?>
 </body>
 
